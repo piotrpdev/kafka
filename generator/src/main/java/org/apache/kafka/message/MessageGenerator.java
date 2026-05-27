@@ -65,15 +65,38 @@ public final class MessageGenerator {
 
     static final String METADATA_JSON_CONVERTERS_JAVA = "MetadataJsonConverters.java";
 
-    static final String API_MESSAGE_CLASS = "org.apache.kafka.common.protocol.ApiMessage";
+    static final String DEFAULT_KAFKA_BASE_PACKAGE = "org.apache.kafka";
 
-    static final String MESSAGE_CLASS = "org.apache.kafka.common.protocol.Message";
+    // Mutable so callers can redirect generated imports to a different base package via setKafkaBasePackage().
+    // Suffix mappings are defined solely in setKafkaBasePackage(); the static initializer seeds the defaults.
+    static String API_MESSAGE_CLASS;
+    static String MESSAGE_CLASS;
+    static String MESSAGE_UTIL_CLASS;
+    static String READABLE_CLASS;
+    static String WRITABLE_CLASS;
+    static String IMPLICIT_LINKED_HASH_COLLECTION_CLASS;
+    static String IMPLICIT_LINKED_HASH_MULTI_COLLECTION_CLASS;
+    static String UNSUPPORTED_VERSION_EXCEPTION_CLASS;
+    static String TYPE_CLASS;
+    static String FIELD_CLASS;
+    static String SCHEMA_CLASS;
+    static String NULLABLE_SCHEMA_CLASS;
+    static String ARRAYOF_CLASS;
+    static String COMPACT_ARRAYOF_CLASS;
+    static String BYTES_CLASS;
+    static String UUID_CLASS;
+    static String BASE_RECORDS_CLASS;
+    static String MEMORY_RECORDS_CLASS;
+    static String BYTE_UTILS_CLASS;
+    static String TAGGED_FIELDS_SECTION_CLASS;
+    static String OBJECT_SERIALIZATION_CACHE_CLASS;
+    static String MESSAGE_SIZE_ACCUMULATOR_CLASS;
+    static String RAW_TAGGED_FIELD_CLASS;
+    static String RAW_TAGGED_FIELD_WRITER_CLASS;
 
-    static final String MESSAGE_UTIL_CLASS = "org.apache.kafka.common.protocol.MessageUtil";
-
-    static final String READABLE_CLASS = "org.apache.kafka.common.protocol.Readable";
-
-    static final String WRITABLE_CLASS = "org.apache.kafka.common.protocol.Writable";
+    static {
+        setKafkaBasePackage(DEFAULT_KAFKA_BASE_PACKAGE);
+    }
 
     static final String ARRAYS_CLASS = "java.util.Arrays";
 
@@ -83,56 +106,15 @@ public final class MessageGenerator {
 
     static final String ARRAYLIST_CLASS = "java.util.ArrayList";
 
-    static final String IMPLICIT_LINKED_HASH_COLLECTION_CLASS =
-        "org.apache.kafka.common.utils.ImplicitLinkedHashCollection";
-
-    static final String IMPLICIT_LINKED_HASH_MULTI_COLLECTION_CLASS =
-        "org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection";
-
-    static final String UNSUPPORTED_VERSION_EXCEPTION_CLASS =
-        "org.apache.kafka.common.errors.UnsupportedVersionException";
-
     static final String ITERATOR_CLASS = "java.util.Iterator";
 
     static final String ENUM_SET_CLASS = "java.util.EnumSet";
-
-    static final String TYPE_CLASS = "org.apache.kafka.common.protocol.types.Type";
-
-    static final String FIELD_CLASS = "org.apache.kafka.common.protocol.types.Field";
-
-    static final String SCHEMA_CLASS = "org.apache.kafka.common.protocol.types.Schema";
-
-    static final String NULLABLE_SCHEMA_CLASS = "org.apache.kafka.common.protocol.types.NullableSchema";
-
-    static final String ARRAYOF_CLASS = "org.apache.kafka.common.protocol.types.ArrayOf";
-
-    static final String COMPACT_ARRAYOF_CLASS = "org.apache.kafka.common.protocol.types.CompactArrayOf";
-
-    static final String BYTES_CLASS = "org.apache.kafka.common.utils.Bytes";
-
-    static final String UUID_CLASS = "org.apache.kafka.common.Uuid";
-
-    static final String BASE_RECORDS_CLASS = "org.apache.kafka.common.record.internal.BaseRecords";
-
-    static final String MEMORY_RECORDS_CLASS = "org.apache.kafka.common.record.internal.MemoryRecords";
 
     static final String REQUEST_SUFFIX = "Request";
 
     static final String RESPONSE_SUFFIX = "Response";
 
-    static final String BYTE_UTILS_CLASS = "org.apache.kafka.common.utils.ByteUtils";
-
     static final String STANDARD_CHARSETS = "java.nio.charset.StandardCharsets";
-
-    static final String TAGGED_FIELDS_SECTION_CLASS = "org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection";
-
-    static final String OBJECT_SERIALIZATION_CACHE_CLASS = "org.apache.kafka.common.protocol.ObjectSerializationCache";
-
-    static final String MESSAGE_SIZE_ACCUMULATOR_CLASS = "org.apache.kafka.common.protocol.MessageSizeAccumulator";
-
-    static final String RAW_TAGGED_FIELD_CLASS = "org.apache.kafka.common.protocol.types.RawTaggedField";
-
-    static final String RAW_TAGGED_FIELD_WRITER_CLASS = "org.apache.kafka.common.protocol.types.RawTaggedFieldWriter";
 
     static final String TREE_MAP_CLASS = "java.util.TreeMap";
 
@@ -356,6 +338,38 @@ public final class MessageGenerator {
     }
 
     /**
+     * Reconfigure all Kafka-specific class name constants to use the given base package instead of
+     * the default {@value #DEFAULT_KAFKA_BASE_PACKAGE}. Must be called before any generators are
+     * instantiated. Useful when generating code for a fork or a shaded distribution.
+     */
+    public static void setKafkaBasePackage(String basePackage) {
+        API_MESSAGE_CLASS = basePackage + ".common.protocol.ApiMessage";
+        MESSAGE_CLASS = basePackage + ".common.protocol.Message";
+        MESSAGE_UTIL_CLASS = basePackage + ".common.protocol.MessageUtil";
+        READABLE_CLASS = basePackage + ".common.protocol.Readable";
+        WRITABLE_CLASS = basePackage + ".common.protocol.Writable";
+        IMPLICIT_LINKED_HASH_COLLECTION_CLASS = basePackage + ".common.utils.ImplicitLinkedHashCollection";
+        IMPLICIT_LINKED_HASH_MULTI_COLLECTION_CLASS = basePackage + ".common.utils.ImplicitLinkedHashMultiCollection";
+        UNSUPPORTED_VERSION_EXCEPTION_CLASS = basePackage + ".common.errors.UnsupportedVersionException";
+        TYPE_CLASS = basePackage + ".common.protocol.types.Type";
+        FIELD_CLASS = basePackage + ".common.protocol.types.Field";
+        SCHEMA_CLASS = basePackage + ".common.protocol.types.Schema";
+        NULLABLE_SCHEMA_CLASS = basePackage + ".common.protocol.types.NullableSchema";
+        ARRAYOF_CLASS = basePackage + ".common.protocol.types.ArrayOf";
+        COMPACT_ARRAYOF_CLASS = basePackage + ".common.protocol.types.CompactArrayOf";
+        BYTES_CLASS = basePackage + ".common.utils.Bytes";
+        UUID_CLASS = basePackage + ".common.Uuid";
+        BASE_RECORDS_CLASS = basePackage + ".common.record.internal.BaseRecords";
+        MEMORY_RECORDS_CLASS = basePackage + ".common.record.internal.MemoryRecords";
+        BYTE_UTILS_CLASS = basePackage + ".common.utils.ByteUtils";
+        TAGGED_FIELDS_SECTION_CLASS = basePackage + ".common.protocol.types.Field.TaggedFieldsSection";
+        OBJECT_SERIALIZATION_CACHE_CLASS = basePackage + ".common.protocol.ObjectSerializationCache";
+        MESSAGE_SIZE_ACCUMULATOR_CLASS = basePackage + ".common.protocol.MessageSizeAccumulator";
+        RAW_TAGGED_FIELD_CLASS = basePackage + ".common.protocol.types.RawTaggedField";
+        RAW_TAGGED_FIELD_WRITER_CLASS = basePackage + ".common.protocol.types.RawTaggedFieldWriter";
+    }
+
+    /**
      * Return the number of bytes needed to encode an integer in unsigned variable-length format.
      */
     static int sizeOfUnsignedVarint(int value) {
@@ -397,7 +411,15 @@ public final class MessageGenerator {
             .action(store())
             .metavar("MESSAGE_CLASS_GENERATORS")
             .help("The message class generators to use.");
+        parser.addArgument("--base-package", "-b")
+            .action(store())
+            .setDefault(DEFAULT_KAFKA_BASE_PACKAGE)
+            .metavar("BASE_PACKAGE")
+            .help("The base Java package for Kafka runtime classes referenced in generated code " +
+                "(default: " + DEFAULT_KAFKA_BASE_PACKAGE + "). Override when generating for a fork " +
+                "or shaded distribution whose runtime classes live under a different root package.");
         Namespace res = parser.parseArgsOrFail(args);
+        setKafkaBasePackage(res.getString("base_package"));
         processDirectories(res.getString("package"), res.getString("output"),
             res.getString("input"), res.getList("typeclass_generators"),
             res.getList("message_class_generators"));
